@@ -19,24 +19,49 @@
     'use strict';
 
     {
-      const Todo = () => {
+      const Todo = (props) => {
+        const handleDeleteClick = () => {
+          props.onDeleteClick(props.todo.id);
+        };
+
         return (
           <li>
             <label>
               <input type="checkbox" />
-              <span>aaa</span>
+              <span>{props.todo.title}</span>
             </label>
-            <button>Del</button>
+            <button onClick={handleDeleteClick}>Del</button>
           </li>
         );
       };
 
       const App = () => {
-        const todos = [
+        const [todos, setTodos] = React.useState([
           { id: 0, title: 'aaa', isCompleted: false },
           { id: 1, title: 'bbb', isCompleted: true },
           { id: 2, title: 'ccc', isCompleted: false },
-        ];
+        ])
+
+        const handleTodoDeleteClick = (id) => {
+          if (!confirm('Sure?')) {
+            return;
+          }
+
+          const newTodos = todos.filter((todo) => {
+            return todo.id !== id;
+          });
+          setTodos(newTodos);
+        };
+
+        const todoItems = todos.map((todo, key) => {
+          return (
+            <Todo
+              key={key}
+              todo={todo}
+              onDeleteClick={handleTodoDeleteClick}
+            />
+          );
+        });
 
         return (
           <>
@@ -45,9 +70,7 @@
               <button id="purge">Purge</button>
             </h1>
             <ul id="todos">
-              <Todo />
-              <Todo />
-              <Todo />
+              {todoItems}
             </ul>
             <form id="add-form">
               <input type="text" />
