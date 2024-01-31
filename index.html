@@ -24,10 +24,18 @@
           props.onDeleteClick(props.todo.id);
         };
 
+        const handleCheckboxChange = () => {
+          props.onCheckboxChange(props.todo.id);
+        };
+
         return (
           <li>
             <label>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={props.todo.isCompleted}
+                onChange={handleCheckboxChange}
+              />
               <span>{props.todo.title}</span>
             </label>
             <button onClick={handleDeleteClick}>Del</button>
@@ -40,13 +48,23 @@
           { id: 0, title: 'aaa', isCompleted: false },
           { id: 1, title: 'bbb', isCompleted: true },
           { id: 2, title: 'ccc', isCompleted: false },
-        ])
+        ]);
+
+        const handleTodoCheckboxChange = (id) => {
+          const newTodos = todos.map((todo) => {
+            return {
+              id: todo.id,
+              title: todo.title,
+              isCompleted: todo.id === id ? !todo.isCompleted : todo.isCompleted,
+            };
+          });
+          setTodos(newTodos);
+        };
 
         const handleTodoDeleteClick = (id) => {
           if (!confirm('Sure?')) {
             return;
           }
-
           const newTodos = todos.filter((todo) => {
             return todo.id !== id;
           });
@@ -59,6 +77,7 @@
               key={key}
               todo={todo}
               onDeleteClick={handleTodoDeleteClick}
+              onCheckboxChange={handleTodoCheckboxChange}
             />
           );
         });
